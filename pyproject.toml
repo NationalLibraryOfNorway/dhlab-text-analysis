@@ -1,0 +1,15 @@
+[project]
+name = "dhlab-text-analysis"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "Tita",email = "tita.enstad@nb.no"},
+]
+dependencies = ["dhlab>=2.43", "transformers[torch]>=5.22.1", "notebook>=7.6.4", "nb-tokenizer>=0.1.0", "scikit-learn>=1.9.1", "matplotlib>=3.11.2", "sentence-transformers>=6.2.0", "plotly>=7.1.0"]
+requires-python = "==3.14.*"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[tool.pdm]
+distribution = false
