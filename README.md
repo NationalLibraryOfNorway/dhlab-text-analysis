@@ -13,7 +13,7 @@ Notebookene kjøres uavhengig av hverandre.
 ### Skript
 - `01_last_ned_data.py`: Laster ned nynorsk-delen av [Målfrid 2026](https://www.nb.no/sprakbanken/ressurskatalog/oai-nb-no-sbr-107/) fra Språkbanken og pakker den ut til `data/maalfrid/`.
 - `02_pakk_ut_data.py`: Skriver hvert dokument til en egen tekstfil, `data/maalfrid/textfiles/<domene>/<type>_<uuid>.txt`.
-- `03_lag_subsett.py`: Trekker 10 tilfeldige html- og doc-filer fra hvert domene fra en liste av 35 håndplukkede domener til `data/maalfrid/subset/`.
+- `03_lag_subsett.py`: Trekker 100 tilfeldige html- og doc-filer fra hvert av fem håndplukkede domener (fiskeridir.no, mattilsynet.no, uio.no, uit.no og varsom.no) til `data/maalfrid/subset/`. Mappen tømmes før subsettet skrives.
 
 ### Notebooks
 - `dhlab_embeddings.ipynb`: Bag-of-words-embeddinger av subsettet, tokenisert med `nb_tokenizer` og vektet med ordfrekvenser fra dhlab (`totals`).
