@@ -5,30 +5,10 @@
 groups = ["default"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:007798360417c75280b31538fc432378dbe9adbbbffb8fbfbeb8d982f3a84031"
+content_hash = "sha256:48b783e57ac33efc6f621065b24b2f43d55c9132074843427b89732efe68e11d"
 
 [[metadata.targets]]
 requires_python = "==3.14.*"
-
-[[package]]
-name = "accelerate"
-version = "1.15.0"
-requires_python = ">=3.10.0"
-summary = "Accelerate"
-groups = ["default"]
-dependencies = [
-    "huggingface-hub>=0.21.0",
-    "numpy>=1.17",
-    "packaging>=20.0",
-    "psutil",
-    "pyyaml",
-    "safetensors>=0.4.3",
-    "torch>=2.0.0",
-]
-files = [
-    {file = "accelerate-1.15.0-py3-none-any.whl", hash = "sha256:97eacca0b73e45cb867dbf8c5d5d4dc32219544300e0c8992c7334dc2ef33cec"},
-    {file = "accelerate-1.15.0.tar.gz", hash = "sha256:5654f8c5eaa0d4fa68b33e287a97765da6849bf6d51dcac874e73fbbddfb6134"},
-]
 
 [[package]]
 name = "annotated-doc"
@@ -807,6 +787,30 @@ groups = ["default"]
 files = [
     {file = "idna-3.20-py3-none-any.whl", hash = "sha256:ab7ae7122974553370f0bdb919e1a960b2cd1bc1ef0276416d896db81c14582c"},
     {file = "idna-3.20.tar.gz", hash = "sha256:a7db850025b95ded1eae8a46181a1a6c56c92c96f0e2b005d9ff8dc0210cab44"},
+]
+
+[[package]]
+name = "igraph"
+version = "0.11.9"
+requires_python = ">=3.9"
+summary = "High performance graph data structures and algorithms"
+groups = ["default"]
+dependencies = [
+    "texttable>=1.6.2",
+]
+files = [
+    {file = "igraph-0.11.9-cp39-abi3-macosx_10_9_x86_64.whl", hash = "sha256:ef30a8eb6329a71211652223cad900dc42bc7fdb44d9e942e991181232906ac2"},
+    {file = "igraph-0.11.9-cp39-abi3-macosx_11_0_arm64.whl", hash = "sha256:4b3224b2b74e9dfac1271dc6f2e1061d13492f91198d05e1b8b696b994e5e269"},
+    {file = "igraph-0.11.9-cp39-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:adf7d7200c2e11a3b1122786f77cee96072c593fd62794aadb5ce546a24fa791"},
+    {file = "igraph-0.11.9-cp39-abi3-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:78a7f3a490f3f6a8aab99948e3e62ae81fc1e8a8aa07e326b09f4e570c042e79"},
+    {file = "igraph-0.11.9-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:773201c9eafef668be11d8966cf2d7114d34757cd9cfdbd8c190fefcd341220b"},
+    {file = "igraph-0.11.9-cp39-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:9bc6fb4316bc79bd0d800dd0186921ef62da971be147861872be90242acbae7d"},
+    {file = "igraph-0.11.9-cp39-abi3-musllinux_1_2_i686.whl", hash = "sha256:e45d03bfb931b73f323b531fc0d87235ac96c41a64363b243677034576cf411b"},
+    {file = "igraph-0.11.9-cp39-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:157b4a836628ca55c6422098bf34336006c1d517fc86fa0e89af3a233e3baa30"},
+    {file = "igraph-0.11.9-cp39-abi3-win32.whl", hash = "sha256:1fd67a0771b8ce70bef361557bdeb6ca7a1012f9fb8368eba86967deeb99a110"},
+    {file = "igraph-0.11.9-cp39-abi3-win_amd64.whl", hash = "sha256:09c7d49c7759e058bf2526bbac54dd1f9e0725ff64352f01545db59c09de88cf"},
+    {file = "igraph-0.11.9-cp39-abi3-win_arm64.whl", hash = "sha256:8acca4f2463f4de572471cca2d46bb3ef5b3082bc125b9ec30e8032b177951df"},
+    {file = "igraph-0.11.9.tar.gz", hash = "sha256:c57ce44873abcfcfd1d61d7d261e416d352186958e7b5d299cf244efa6757816"},
 ]
 
 [[package]]
@@ -1973,6 +1977,7 @@ version = "7.2.2"
 requires_python = ">=3.6"
 summary = "Cross-platform lib for process and system monitoring."
 groups = ["default"]
+marker = "sys_platform != \"emscripten\" and sys_platform != \"cygwin\" and sys_platform != \"android\""
 files = [
     {file = "psutil-7.2.2-cp314-cp314t-macosx_10_15_x86_64.whl", hash = "sha256:eed63d3b4d62449571547b60578c5b2c4bcccc5387148db46e0c2313dad0ee00"},
     {file = "psutil-7.2.2-cp314-cp314t-macosx_11_0_arm64.whl", hash = "sha256:7b6d09433a10592ce39b13d7be5a54fbac1d1228ed29abc880fb23df7cb694c9"},
@@ -2279,17 +2284,18 @@ files = [
 
 [[package]]
 name = "rich"
-version = "15.0.0"
-requires_python = ">=3.9.0"
+version = "13.9.4"
+requires_python = ">=3.8.0"
 summary = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
 groups = ["default"]
 dependencies = [
     "markdown-it-py>=2.2.0",
     "pygments<3.0.0,>=2.13.0",
+    "typing-extensions<5.0,>=4.0.0; python_version < \"3.11\"",
 ]
 files = [
-    {file = "rich-15.0.0-py3-none-any.whl", hash = "sha256:33bd4ef74232fb73fe9279a257718407f169c09b78a87ad3d296f548e27de0bb"},
-    {file = "rich-15.0.0.tar.gz", hash = "sha256:edd07a4824c6b40189fb7ac9bc4c52536e9780fbbfbddf6f1e2502c31b068c36"},
+    {file = "rich-13.9.4-py3-none-any.whl", hash = "sha256:6049d5e6ec054bf2779ab3358186963bac2ea89175919d699e378b99738c2a90"},
+    {file = "rich-13.9.4.tar.gz", hash = "sha256:439594978a49a09530cff7ebc4b5c7103ef57baf48d5ea3184f21d9a2befa098"},
 ]
 
 [[package]]
@@ -2558,6 +2564,16 @@ files = [
 ]
 
 [[package]]
+name = "texttable"
+version = "1.7.2"
+summary = "module to create simple ASCII tables"
+groups = ["default"]
+files = [
+    {file = "texttable-1.7.2-py2.py3-none-any.whl", hash = "sha256:a381e1ed30e4d4bd24cdacabe26463b7a570c0e964fc0b35d8d9276b2fcbe252"},
+    {file = "texttable-1.7.2.tar.gz", hash = "sha256:dc16ea6b35fbf5291ba6ef79d79e37d9b3ca6acd7bae3ca3450488d7c2e19c99"},
+]
+
+[[package]]
 name = "threadpoolctl"
 version = "3.7.0"
 requires_python = ">=3.9"
@@ -2740,23 +2756,6 @@ files = [
 ]
 
 [[package]]
-name = "transformers"
-version = "5.22.1"
-extras = ["torch"]
-requires_python = ">=3.11.0"
-summary = "Transformers: the model-definition framework for state-of-the-art machine learning models in text, vision, audio, and multimodal models, for both inference and training."
-groups = ["default"]
-dependencies = [
-    "accelerate>=1.1.0",
-    "torch>=2.6",
-    "transformers==5.22.1",
-]
-files = [
-    {file = "transformers-5.22.1-py3-none-any.whl", hash = "sha256:c940b4bf98de4f568723895f330ba1460a398bd83061b93b70238c3fe32e4389"},
-    {file = "transformers-5.22.1.tar.gz", hash = "sha256:bed9fd76d6f43b4a1a9fc5d0c565ace7c77edbd029784f8cbcdf772cb5e924d8"},
-]
-
-[[package]]
 name = "triton"
 version = "3.9.0"
 requires_python = "<3.16,>=3.11"
@@ -2783,6 +2782,29 @@ marker = "sys_platform != \"emscripten\""
 files = [
     {file = "truststore-0.10.5-py3-none-any.whl", hash = "sha256:9aaaedaefaf06d8b206278cf8b5012bc897f485a874503501e12d776df78951c"},
     {file = "truststore-0.10.5.tar.gz", hash = "sha256:30d36967ccaded5cbb38d602c433f53600036c79d502f4533a49b60a03bbefcd"},
+]
+
+[[package]]
+name = "turftopic"
+version = "0.29.0"
+requires_python = ">=3.10"
+summary = "Topic modeling with contextual representations from sentence transformers."
+groups = ["default"]
+dependencies = [
+    "huggingface-hub>=0.23.2",
+    "igraph<0.12.0,>=0.11.6",
+    "joblib<2.0.0,>=1.2.0",
+    "numpy>=1.23.0",
+    "pillow>=10.4.0",
+    "rich<14.0.0,>=13.6.0",
+    "scikit-learn<2.0.0,>=1.3.0",
+    "scipy<2.0.0,>=1.10.0",
+    "sentence-transformers>=6.0.0",
+    "torch<3.0.0,>=2.1.0",
+]
+files = [
+    {file = "turftopic-0.29.0-py3-none-any.whl", hash = "sha256:7a90c2508245c870064e4bf7e0751709c91ff17b3042e527f9299c2c82893226"},
+    {file = "turftopic-0.29.0.tar.gz", hash = "sha256:a39c28ac87339862f0503660a355e34ecd38a5e56c31e94a6dd13841d16b0fcc"},
 ]
 
 [[package]]
