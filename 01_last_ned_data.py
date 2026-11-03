@@ -1,4 +1,4 @@
-"""Download the Nynorsk part of Målfrid 2026 from Språkbanken and extract it to data/.
+"""Download the Nynorsk part of Målfrid 2026 from Språkbanken and extract it to data/maalfrid/.
 
 Source: https://www.nb.no/sprakbanken/ressurskatalog/oai-nb-no-sbr-107/
 Licence: NLOD 2.0

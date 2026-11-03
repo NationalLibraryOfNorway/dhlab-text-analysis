@@ -1,6 +1,6 @@
-"""Unpack the Målfrid .jsonl.gz files in data/ to plain-text files.
+"""Unpack the Målfrid .jsonl.gz files in data/maalfrid/ to plain-text files.
 
-Documents are grouped by domain in data/textfiles/<domain>/, with one
+Documents are grouped by domain in data/maalfrid/textfiles/<domain>/, with one
 <type>_<uuid>.txt per document containing its fulltext paragraphs.
 """
 
