@@ -18,11 +18,14 @@ from sklearn.preprocessing import normalize
 SEED = 42
 SVD_COMPONENTS = 50
 
-HIGHLIGHT_COLOR = "#2a78d6"
-BACKGROUND_COLOR = "#d4d3cf"
+# One colour and one marker shape per domain, assigned in this fixed order to the
+# domains sorted by name. Five colours can't all be told apart in a scatter plot
+# (e.g. with colour vision deficiency), so the shape is a second cue.
+DOMAIN_COLORS = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4"]
+DOMAIN_SYMBOLS = ["circle", "square", "diamond", "triangle-up", "x"]
+LINE_COLOR = "#d4d3cf"
 TEXT_COLOR = "#0b0b0b"
 
-SNIPPET_CHARS = 1000
 PLOT_SIZE = 700
 PANEL_WIDTH = 400
 
@@ -45,89 +48,63 @@ def project_2d(embeddings: np.ndarray, doc_ids: pd.Index, seed: int = SEED) -> p
     return projection
 
 
-def snippet(text: str) -> str:
-    """The first SNIPPET_CHARS characters of the text."""
-    return text[:SNIPPET_CHARS] + ("…" if len(text) > SNIPPET_CHARS else "")
-
-
 def plot_by_domain(projection: pd.DataFrame, texts: pd.Series, title: str) -> HTML:
-    """Interactive scatter plot highlighting one domain against the rest in grey.
+    """Interactive scatter plot with one colour and marker shape per domain.
 
-    The highlighted domain is picked from a dropdown. Hovering a point shows its
-    domain, and the start of its text is shown in a panel to the right of the plot.
-    ``texts`` is indexed like ``projection``. The grey layer holds every document,
-    so only the highlighted points change when another domain is picked.
+    Hovering a point shows its domain, and its full text is shown in a scrollable
+    panel to the right of the plot. Clicking a point pins its text in the panel so
+    the mouse can move there without passing over other points; clicking it again
+    unpins it. Clicking a domain in the legend hides or shows it, and
+    double-clicking shows that domain alone. ``texts`` is indexed like ``projection``.
     """
     domains = sorted(projection["domain"].unique())
-    snippets = texts[projection.index].map(snippet)
+    doc_texts = texts[projection.index]
 
-    def highlighted(domain: str) -> dict:
+    fig = go.Figure()
+    for domain, color, symbol in zip(domains, DOMAIN_COLORS, DOMAIN_SYMBOLS):
         in_domain = projection["domain"] == domain
-        return {
-            "x": [projection.loc[in_domain, "x"].tolist()],
-            "y": [projection.loc[in_domain, "y"].tolist()],
-            "text": [projection.loc[in_domain, "domain"].tolist()],
-            "customdata": [snippets[in_domain].tolist()],
-        }
-
-    initial = highlighted(domains[0])
-    fig = go.Figure(
-        [
+        fig.add_trace(
             go.Scatter(
-                x=projection["x"],
-                y=projection["y"],
-                text=projection["domain"],
-                customdata=snippets,
-                mode="markers",
-                marker={"size": 6, "color": BACKGROUND_COLOR},
-                hovertemplate="%{text}<extra></extra>",
-                name="All documents",
-            ),
-            go.Scatter(
-                x=initial["x"][0],
-                y=initial["y"][0],
-                text=initial["text"][0],
-                customdata=initial["customdata"][0],
+                x=projection.loc[in_domain, "x"],
+                y=projection.loc[in_domain, "y"],
+                text=projection.loc[in_domain, "domain"],
+                customdata=doc_texts[in_domain],
                 mode="markers",
                 marker={
-                    "size": 10,
-                    "color": HIGHLIGHT_COLOR,
+                    "size": 9,
+                    "color": color,
+                    "symbol": symbol,
+                    "opacity": 0.85,
                     "line": {"width": 1, "color": "white"},
                 },
                 hovertemplate="%{text}<extra></extra>",
-                name="Selected domain",
-            ),
-        ]
-    )
+                name=domain,
+            )
+        )
     fig.update_layout(
         title={"text": title, "font": {"color": TEXT_COLOR}},
         width=PLOT_SIZE,
         height=PLOT_SIZE,
         plot_bgcolor="white",
-        showlegend=False,
         hoverlabel={
             "bgcolor": "rgba(255, 255, 255, 0.8)",
             "font": {"size": 11, "color": TEXT_COLOR},
         },
-        updatemenus=[
-            {
-                "buttons": [
-                    {"label": domain, "method": "restyle", "args": [highlighted(domain), [1]]}
-                    for domain in domains
-                ],
-                "x": 0,
-                "xanchor": "left",
-                "y": 1.02,
-                "yanchor": "bottom",
-            }
-        ],
+        legend={
+            "orientation": "h",
+            "x": 0,
+            "xanchor": "left",
+            "y": 1.02,
+            "yanchor": "bottom",
+            "font": {"color": TEXT_COLOR},
+        },
         margin={"t": 110},
     )
     axis = {
         "showticklabels": False,
         "showgrid": False,
         "zeroline": False,
-        "linecolor": BACKGROUND_COLOR,
+        "linecolor": LINE_COLOR,
         "mirror": True,
     }
     fig.update_xaxes(**axis)
@@ -135,7 +112,8 @@ def plot_by_domain(projection: pd.DataFrame, texts: pd.Series, title: str) -> HT
 
     # Notebook frontends like VS Code run output scripts without waiting for external
     # scripts to load, so plotly.js is loaded here and the plot drawn once it's ready.
-    # On hover, the text panel is filled with the point's domain and snippet.
+    # On hover, the text panel is filled with the point's domain and text, unless a
+    # point has been pinned by clicking it.
     plot_id = f"plot-{uuid.uuid4().hex}"
     plotly_url = f"https://cdn.plot.ly/plotly-{get_plotlyjs_version()}.min.js"
     fig_json = fig.to_json().replace("</", "<\\/")
@@ -143,11 +121,24 @@ def plot_by_domain(projection: pd.DataFrame, texts: pd.Series, title: str) -> HT
     (() => {{
         const fig = {fig_json};
         const render = () => Plotly.newPlot("{plot_id}", fig.data, fig.layout).then((plot) => {{
-            plot.on("plotly_hover", (event) => {{
+            let pinned = null;
+            const show = (point, isPinned) => {{
                 const panel = document.getElementById("{plot_id}-text");
-                const point = event.points[0];
                 panel.querySelector(".domain").textContent = point.text;
-                panel.querySelector(".snippet").textContent = point.customdata;
+                panel.querySelector(".status").textContent = isPinned
+                    ? "Pinned. Click the point again to unpin."
+                    : "Click the point to pin its text.";
+                panel.querySelector(".doc-text").textContent = point.customdata;
+                panel.scrollTop = 0;
+            }};
+            const key = (point) => `${{point.curveNumber}}:${{point.pointNumber}}`;
+            plot.on("plotly_hover", (event) => {{
+                if (pinned === null) show(event.points[0], false);
+            }});
+            plot.on("plotly_click", (event) => {{
+                const point = event.points[0];
+                pinned = pinned === key(point) ? null : key(point);
+                show(point, pinned !== null);
             }});
         }});
         if (window.Plotly) {{
@@ -169,10 +160,11 @@ def plot_by_domain(projection: pd.DataFrame, texts: pd.Series, title: str) -> HT
           <div id="{plot_id}" style="width: {PLOT_SIZE}px; height: {PLOT_SIZE}px;"></div>
           <div id="{plot_id}-text" style="width: {PANEL_WIDTH}px; height: {PLOT_SIZE - 120}px;
                margin-top: 100px; padding: 12px; overflow-y: auto; box-sizing: border-box;
-               border: 1px solid {BACKGROUND_COLOR}; background: white; color: {TEXT_COLOR};
+               border: 1px solid {LINE_COLOR}; background: white; color: {TEXT_COLOR};
                font-family: sans-serif; font-size: 12px;">
-            <div class="domain" style="font-weight: bold; margin-bottom: 8px;"></div>
-            <div class="snippet" style="white-space: pre-wrap;">Hover a point to see its text.</div>
+            <div class="domain" style="font-weight: bold;"></div>
+            <div class="status" style="color: #6b6a64; font-size: 11px; margin-bottom: 8px;"></div>
+            <div class="doc-text" style="white-space: pre-wrap;">Hover a point to see its text.</div>
           </div>
         </div>
         <script>{script}</script>
